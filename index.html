@@ -27,7 +27,7 @@
     <h2>Resumo Acadêmico</h2>
     
     <label>AV1 (Peso 2.5)</label>
-    <input type="text" id="av1" placeholder="Ex: 6,95 ou 6.95">
+    <input type="text" id="av1" placeholder="Ex: 6,95">
     
     <label>AV2 (Peso 2.5)</label>
     <input type="text" id="av2" placeholder="Ex: 7,5">
@@ -38,7 +38,7 @@
     <label>EDAG (Peso 2.0)</label>
     <input type="text" id="edag" placeholder="Ex: 9,2">
 
-    <div id="msg-erro" class="erro">⚠️ Preencha todas as notas corretamente!</div>
+    <div id="msg-erro" class="erro">⚠️ Preencha todas as notas corretamente (0 a 10)!</div>
 
     <button onclick="calcular()">Gerar Tabela e Resultado</button>
 
@@ -63,12 +63,11 @@
         const ids = ['av1', 'av2', 'av3', 'edag'];
         const msgErro = document.getElementById('msg-erro');
         const areaRes = document.getElementById('area-resultado');
-        
         let notasProcessadas = [];
 
         for (let id of ids) {
             let campo = document.getElementById(id);
-            let valorTexto = campo.value.trim().replace(',', '.'); 
+            let valorTexto = campo.value.trim().replace(',', '.');
             let valorNumerico = parseFloat(valorTexto);
 
             if (valorTexto === "" || isNaN(valorNumerico) || valorNumerico < 0 || valorNumerico > 10) {
@@ -81,7 +80,6 @@
         }
 
         msgErro.style.display = 'none';
-
         const notasObj = [
             { nome: "AV1", valor: notasProcessadas[0], peso: 2.5 },
             { nome: "AV2", valor: notasProcessadas[1], peso: 2.5 },
@@ -89,30 +87,36 @@
             { nome: "EDAG", valor: notasProcessadas[3], peso: 2.0 }
         ];
 
-        let mediaCalculada = (notasObj[0].valor * 2.5 + notasObj[1].valor * 2.5 + notasObj[2].valor * 3.0 + notasObj[3].valor * 2.0) / 10;
+        let mediaBruta = (notasObj[0].valor * 2.5 + notasObj[1].valor * 2.5 + notasObj[2].valor * 3.0 + notasObj[3].valor * 2.0) / 10;
         
-        let mediaArredondada = Math.round(mediaCalculada * 10) / 10;
+        let mediaFinal;
+        let decimal = mediaBruta % 1;
+
+        if (decimal >= 0.945) { 
+            mediaFinal = Math.ceil(mediaBruta);
+        } else {
+            mediaFinal = Math.floor(mediaBruta * 10) / 10;
+        }
         
         areaRes.style.display = 'block';
-
         const corpo = document.getElementById('corpo-tabela');
         corpo.innerHTML = notasObj.map(n => `<tr><td>${n.nome}</td><td>${n.valor.toFixed(2).replace('.', ',')}</td><td>${n.peso}</td></tr>`).join('');
-        corpo.innerHTML += `<tr style="font-weight:bold; background:#eee"><td>MÉDIA FINAL</td><td>${mediaArredondada.toFixed(1).replace('.', ',')}</td><td>10.0</td></tr>`;
+        corpo.innerHTML += `<tr style="font-weight:bold; background:#eee"><td>MÉDIA FINAL</td><td>${mediaFinal.toFixed(1).replace('.', ',')}</td><td>10.0</td></tr>`;
 
         const status = document.getElementById('status');
         const explicacao = document.getElementById('explicacao-final');
         explicacao.innerHTML = ""; 
 
-        if (mediaArredondada >= 7.0) {
+        if (mediaFinal >= 7.0) {
             areaRes.style.borderLeftColor = "#27ae60";
             status.innerHTML = "<h3 style='color:green'>SITUAÇÃO: APROVADO!</h3>";
-        } else if (mediaArredondada >= 4.0) {
+        } else if (mediaFinal >= 4.0) {
             areaRes.style.borderLeftColor = "#f1c40f";
             status.innerHTML = "<h3 style='color:#856404'>SITUAÇÃO: EM FINAL</h3>";
-            const notaFinal = (10 - mediaArredondada).toFixed(1).replace('.', ',');
+            const notaFinal = (10 - mediaFinal).toFixed(1).replace('.', ',');
             explicacao.innerHTML = `
                 <div class="info-final">
-                    <strong>Arredondamento aplicado:</strong> Sua média foi para ${mediaArredondada.toFixed(1).replace('.', ',')}.<br>
+                    <strong>Arredondamento:</strong> Sua média foi ajustada para ${mediaFinal.toFixed(1).replace('.', ',')}.<br>
                     Precisa tirar <strong>${notaFinal}</strong> na Prova Final.
                 </div>`;
         } else {
