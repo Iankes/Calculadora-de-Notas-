@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Acadêmica</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; padding: 20px; }
+        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 450px; }
+        h2 { color: #2c3e50; text-align: center; margin-bottom: 20px; }
+        label { display: block; margin-top: 10px; font-weight: bold; color: #555; }
+        input { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
+        button { width: 100%; background-color: #27ae60; color: white; border: none; padding: 12px; margin-top: 20px; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; transition: background 0.3s; }
+        button:hover { background-color: #219150; }
+        .result { margin-top: 25px; padding: 15px; border-radius: 8px; border-left: 5px solid #27ae60; background: #f9f9f9; display: none; }
+        .final-box { background: #fff3cd; border: 1px solid #ffeeba; padding: 10px; margin-top: 10px; border-radius: 4px; font-size: 0.9em; }
+        .reprovado { border-left-color: #e74c3c; }
+        .aprovado { border-left-color: #27ae60; }
+        .final { border-left-color: #f1c40f; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Resumo Acadêmico</h2>
+    
+    <label>Nota AV1 (Peso 2.5)</label>
+    <input type="number" id="av1" step="0.1" min="0" max="10" placeholder="Ex: 6.2">
+    
+    <label>Nota AV2 (Peso 2.5)</label>
+    <input type="number" id="av2" step="0.1" min="0" max="10" placeholder="Ex: 7.5">
+    
+    <label>Nota AV3 (Peso 3.0)</label>
+    <input type="number" id="av3" step="0.1" min="0" max="10" placeholder="Ex: 5.0">
+    
+    <label>Nota EDAG (Peso 2.0)</label>
+    <input type="number" id="edag" step="0.1" min="0" max="10" placeholder="Ex: 8.0">
+
+    <button onclick="calcular()">Calcular Resultado</button>
+
+    <div id="resultado" class="result"></div>
+</div>
+
+<script>
+    function calcular() {
+
+        const av1 = parseFloat(document.getElementById('av1').value) || 0;
+        const av2 = parseFloat(document.getElementById('av2').value) || 0;
+        const av3 = parseFloat(document.getElementById('av3').value) || 0;
+        const edag = parseFloat(document.getElementById('edag').value) || 0;
+
+        const media = (av1 * 2.5 + av2 * 2.5 + av3 * 3.0 + edag * 2.0) / 10;
+        
+        const resDiv = document.getElementById('resultado');
+        resDiv.style.display = 'block';
+        resDiv.className = 'result'; 
+
+        let conteudo = `<strong>Média Atual: ${media.toFixed(1)}</strong><br>`;
+
+        if (media >= 7.0) {
+            resDiv.classList.add('aprovado');
+            conteudo += "Situação: <span style='color:green'>APROVADO DIRETO!</span>";
+        } 
+        else if (media >= 4.0) {
+            resDiv.classList.add('final');
+            const faltaParaSete = (7.0 - media).toFixed(1);
+            const notaFinal = (10.0 - media).toFixed(1);
+            
+            conteudo += `Situação: <span style='color:#856404'>EM FINAL</span><br>`;
+            conteudo += `Faltam ${faltaParaSete} para aprovação direta.<br>`;
+            conteudo += `<div class="final-box">`;
+            conteudo += `<strong>Precisa tirar ${notaFinal} na Prova Final.</strong><br>`;
+            conteudo += `<small>Cálculo: A média entre ${media.toFixed(1)} e a Final deve ser 5.0.</small>`;
+            conteudo += `</div>`;
+        } 
+        else {
+            resDiv.classList.add('reprovado');
+            conteudo += "Situação: <span style='color:red'>REPROVADO</span><br>";
+            conteudo += "<small>Média abaixo de 4.0. Sem direito a final.</small>";
+        }
+
+        resDiv.innerHTML = conteudo;
+    }
+</script>
+
+</body>
+</html>
