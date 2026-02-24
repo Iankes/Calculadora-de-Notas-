@@ -1,130 +1,244 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora Acadêmica</title>
+    <title>Calculadora de Notas Acadêmicas</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; padding: 20px; }
-        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
-        h2 { text-align: center; color: #2c3e50; }
-        label { display: block; margin-top: 10px; font-weight: bold; }
-        input { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
-        button { width: 100%; background-color: #27ae60; color: white; border: none; padding: 12px; margin-top: 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
-        th { background-color: #f2f2f2; }
-        
-        .result-box { margin-top: 20px; padding: 15px; border-radius: 8px; display: none; border-left: 5px solid #ccc; }
-        .info-final { background: #fff3cd; padding: 10px; border-radius: 4px; margin-top: 10px; font-size: 0.9em; border: 1px solid #ffeeba; }
-        .erro { color: #e74c3c; font-weight: bold; text-align: center; margin-top: 10px; display: none; }
+        :root {
+            --primary-color: #f39c12;
+            --blue-color: #3498db;
+            --bg-color: #f0f2f5;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 550px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+
+        h2 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .score-circle {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-right: 15px;
+        }
+
+        .score-square {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--blue-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--blue-color);
+            margin-right: 15px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        button:hover {
+            filter: brightness(0.9);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th {
+            text-align: left;
+            color: #777;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+
+        td {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            text-align: center;
+        }
+
+        td:first-child {
+            text-align: left;
+            font-weight: 500;
+        }
+
+        .formula-box {
+            background: #dcdcdc;
+            padding: 15px;
+            text-align: center;
+            border-radius: 6px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .info-text {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #444;
+            margin: 15px 0;
+        }
+
+        #area-resultado {
+            display: none;
+            width: 100%;
+            max-width: 550px;
+        }
+
+        .erro-msg {
+            color: #e74c3c;
+            font-weight: bold;
+            text-align: center;
+            display: none;
+            margin-top: 15px;
+        }
     </style>
 </head>
+
 <body>
 
-<div class="container">
-    <h2>Resumo Acadêmico</h2>
-    
-    <label>AV1 (Peso 2.5)</label>
-    <input type="text" id="av1" placeholder="Ex: 6,95">
-    
-    <label>AV2 (Peso 2.5)</label>
-    <input type="text" id="av2" placeholder="Ex: 7,5">
-    
-    <label>AV3 (Peso 3.0)</label>
-    <input type="text" id="av3" placeholder="Ex: 8,0">
-    
-    <label>EDAG (Peso 2.0)</label>
-    <input type="text" id="edag" placeholder="Ex: 9,2">
+    <div class="card">
+        <h2>Configurações de Notas</h2>
+        <label>AV1 (25%)</label>
+        <input type="text" id="av1" placeholder="Ex: 4,05">
+        <label>AV2 (25%)</label>
+        <input type="text" id="av2" placeholder="Ex: 4,04">
+        <label>AV3 (30%)</label>
+        <input type="text" id="av3" placeholder="Ex: 7,0">
+        <label>EDAG (20%)</label>
+        <input type="text" id="edag" placeholder="Ex: 8,0">
 
-    <div id="msg-erro" class="erro">⚠️ Preencha todas as notas corretamente (0 a 10)!</div>
-
-    <button onclick="calcular()">Gerar Tabela e Resultado</button>
-
-    <div id="area-resultado" class="result-box">
-        <div id="status"></div>
-        <table id="tabela-notas">
-            <thead>
-                <tr>
-                    <th>Avaliação</th>
-                    <th>Nota Original</th>
-                    <th>Peso</th>
-                </tr>
-            </thead>
-            <tbody id="corpo-tabela"></tbody>
-        </table>
-        <div id="explicacao-final"></div>
+        <div id="msg-erro" class="erro-msg">⚠️ Preencha todas as notas corretamente (0 a 10)!</div>
+        <button onclick="calcular()">Calcular Aproveitamento</button>
     </div>
-</div>
 
-<script>
-    function calcular() {
-        const ids = ['av1', 'av2', 'av3', 'edag'];
-        const msgErro = document.getElementById('msg-erro');
-        const areaRes = document.getElementById('area-resultado');
-        let notasProcessadas = [];
+    <div id="area-resultado">
+        <div class="card">
+            <div style="display: flex; align-items: center;">
+                <div class="score-circle" id="circulo-media">0.0</div>
+                <div>
+                    <h2 style="margin: 0;">Média do Semestre</h2>
+                    <div id="msg-situacao" style="font-weight: bold;"></div>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Avaliação</th>
+                        <th>Nota</th>
+                        <th>Peso (%)</th>
+                    </tr>
+                </thead>
+                <tbody id="corpo-tabela"></tbody>
+            </table>
+        </div>
 
-        for (let id of ids) {
-            let campo = document.getElementById(id);
-            let valorTexto = campo.value.trim().replace(',', '.');
-            let valorNumerico = parseFloat(valorTexto);
+        <div class="card" id="card-final" style="display: none;">
+            <div style="display: flex; align-items: center;">
+                <div class="score-square" id="nota-final-necessaria">0.0</div>
+                <div>
+                    <h2 style="margin: 0;">Pontuação para Aprovação</h2>
+                    <div style="font-weight: bold;">Mínimo necessário na Final</div>
+                </div>
+            </div>
+            <div class="formula-box">Pontuação necessária = (50 - 6 x AG) / 4</div>
+        </div>
+    </div>
 
-            if (valorTexto === "" || isNaN(valorNumerico) || valorNumerico < 0 || valorNumerico > 10) {
-                msgErro.style.display = 'block';
-                areaRes.style.display = 'none';
-                campo.focus();
-                return;
+    <script>
+        function calcular() {
+            const ids = ['av1', 'av2', 'av3', 'edag'];
+            let notas = [];
+
+            for (let id of ids) {
+                let campo = document.getElementById(id);
+                let val = campo.value.trim().replace(',', '.');
+                let num = parseFloat(val);
+                if (val === "" || isNaN(num) || num < 0 || num > 10) {
+                    document.getElementById('msg-erro').style.display = 'block';
+                    return;
+                }
+                notas.push(num);
             }
-            notasProcessadas.push(valorNumerico);
-        }
 
-        msgErro.style.display = 'none';
-        const notasObj = [
-            { nome: "AV1", valor: notasProcessadas[0], peso: 2.5 },
-            { nome: "AV2", valor: notasProcessadas[1], peso: 2.5 },
-            { nome: "AV3", valor: notasProcessadas[2], peso: 3.0 },
-            { nome: "EDAG", valor: notasProcessadas[3], peso: 2.0 }
-        ];
+            document.getElementById('msg-erro').style.display = 'none';
+            document.getElementById('area-resultado').style.display = 'block';
 
-        let mediaBruta = (notasObj[0].valor * 2.5 + notasObj[1].valor * 2.5 + notasObj[2].valor * 3.0 + notasObj[3].valor * 2.0) / 10;
-        
-        let mediaFinal;
-        let decimal = mediaBruta % 1;
 
-        if (decimal >= 0.945) { 
-            mediaFinal = Math.ceil(mediaBruta);
-        } else {
-            mediaFinal = Math.floor(mediaBruta * 10) / 10;
-        }
-        
-        areaRes.style.display = 'block';
-        const corpo = document.getElementById('corpo-tabela');
-        corpo.innerHTML = notasObj.map(n => `<tr><td>${n.nome}</td><td>${n.valor.toFixed(2).replace('.', ',')}</td><td>${n.peso}</td></tr>`).join('');
-        corpo.innerHTML += `<tr style="font-weight:bold; background:#eee"><td>MÉDIA FINAL</td><td>${mediaFinal.toFixed(1).replace('.', ',')}</td><td>10.0</td></tr>`;
+            let agBruta = (notas[0] * 2.5 + notas[1] * 2.5 + notas[2] * 3.0 + notas[3] * 2.0) / 10;
 
-        const status = document.getElementById('status');
-        const explicacao = document.getElementById('explicacao-final');
-        explicacao.innerHTML = ""; 
+            let agAjustada;
+            let residuo = agBruta % 0.1;
 
-        if (mediaFinal >= 7.0) {
-            areaRes.style.borderLeftColor = "#27ae60";
-            status.innerHTML = "<h3 style='color:green'>SITUAÇÃO: APROVADO!</h3>";
-        } else if (mediaFinal >= 4.0) {
-            areaRes.style.borderLeftColor = "#f1c40f";
-            status.innerHTML = "<h3 style='color:#856404'>SITUAÇÃO: EM FINAL</h3>";
-            const notaFinal = (10 - mediaFinal).toFixed(1).replace('.', ',');
-            explicacao.innerHTML = `
-                <div class="info-final">
-                    <strong>Arredondamento:</strong> Sua média foi ajustada para ${mediaFinal.toFixed(1).replace('.', ',')}.<br>
-                    Precisa tirar <strong>${notaFinal}</strong> na Prova Final.
-                </div>`;
-        } else {
-            areaRes.style.borderLeftColor = "#e74c3c";
-            status.innerHTML = "<h3 style='color:red'>SITUAÇÃO: REPROVADO</h3>";
-        }
-    }
-</script>
+            if (residuo >= 0.049) {
+                agAjustada = Math.ceil(agBruta * 10) / 10;
+            } else {
+                agAjustada = Math.floor(agBruta * 10) / 10;
+            }
 
-</body>
-</html>
+            document.getElementById('circulo-media').innerText = agA
+        } 
