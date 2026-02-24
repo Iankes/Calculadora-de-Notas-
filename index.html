@@ -3,36 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Notas</title>
+    <title>Calculadora Acadêmica</title>
     <style>
-        :root { 
-            --primary: #f39c12; 
-            --blue: #3498db; 
-            --bg: #f0f2f5; 
-            --red: #e74c3c; 
-            --green: #27ae60; 
-        }
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); display: flex; flex-direction: column; align-items: center; padding: 20px; color: #333; }
+        :root { --primary: #f39c12; --blue: #3498db; --bg: #f0f2f5; --red: #e74c3c; --green: #27ae60; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); display: flex; flex-direction: column; align-items: center; padding: 20px; }
         .card { background: white; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 500px; padding: 25px; margin-bottom: 20px; box-sizing: border-box; }
-        .score-circle { width: 65px; height: 65px; border: 5px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; color: var(--primary); margin-right: 15px; flex-shrink: 0; transition: all 0.3s; }
-        .score-square { width: 60px; height: 60px; border: 4px solid var(--blue); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: bold; color: var(--blue); margin-right: 15px; flex-shrink: 0; }
-        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
-        button { width: 100%; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1.1rem; margin-top: 10px; transition: 0.3s; }
-        button:hover { filter: brightness(0.9); }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        td, th { padding: 12px; border-bottom: 1px solid #eee; text-align: center; }
-        .formula-box { background: #dcdcdc; padding: 15px; text-align: center; border-radius: 6px; font-weight: bold; margin-top: 15px; }
+        .score-circle { width: 65px; height: 65px; border: 5px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; color: var(--primary); margin-right: 15px; }
+        .score-square { width: 60px; height: 60px; border: 4px solid var(--blue); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: bold; color: var(--blue); margin-right: 15px; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
+        button { width: 100%; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1.1rem; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        td, th { padding: 10px; border-bottom: 1px solid #eee; text-align: center; }
+        .formula { background: #ddd; padding: 10px; text-align: center; font-weight: bold; border-radius: 5px; margin-top: 10px; }
     </style>
 </head>
 <body>
 
     <div class="card">
-        <h2 style="margin:0 0 15px 0">Configurações de Notas</h2>
-        <input type="text" id="av1" placeholder="AV1 (Ex: 4,05)">
-        <input type="text" id="av2" placeholder="AV2">
-        <input type="text" id="av3" placeholder="AV3">
-        <input type="text" id="edag" placeholder="EDAG">
-        <button onclick="calcular()">Calcular Aproveitamento</button>
+        <h2 style="margin-top:0">Notas (0 a 10)</h2>
+        <input type="number" id="av1" placeholder="AV1" min="0" max="10" step="0.1">
+        <input type="number" id="av2" placeholder="AV2" min="0" max="10" step="0.1">
+        <input type="number" id="av3" placeholder="AV3" min="0" max="10" step="0.1">
+        <input type="number" id="edag" placeholder="EDAG" min="0" max="10" step="0.1">
+        <button onclick="calcular()">Calcular</button>
     </div>
 
     <div id="res" style="display:none; width: 100%; max-width: 500px;">
@@ -40,12 +33,11 @@
             <div style="display:flex; align-items:center">
                 <div class="score-circle" id="m-circle">0,0</div>
                 <div>
-                    <h3 style="margin:0">Média do Semestre</h3>
-                    <div id="sit" style="font-weight:bold; font-size: 1.1rem;"></div>
+                    <h3 style="margin:0">Média</h3>
+                    <div id="sit" style="font-weight:bold; text-transform: uppercase;"></div>
                 </div>
             </div>
             <table>
-                <thead><tr><th>Ref</th><th>Nota</th><th>Peso</th></tr></thead>
                 <tbody id="tab"></tbody>
             </table>
         </div>
@@ -53,12 +45,9 @@
         <div class="card" id="c-final" style="display:none">
             <div style="display:flex; align-items:center">
                 <div class="score-square" id="f-val">0,0</div>
-                <div>
-                    <h3 style="margin:0">Pontuação para Aprovação</h3>
-                    <small>Mínimo necessário na Final</small>
-                </div>
+                <div><h3 style="margin:0">Mínimo na Final</h3></div>
             </div>
-            <div class="formula-box">Pontuação necessária = (50 - 6 x AG) / 4</div>
+            <div class="formula">PF = (50 - 6 x AG) / 4</div>
         </div>
     </div>
 
@@ -68,9 +57,13 @@
             let n = [];
             
             for (let id of ids) {
-                let v = document.getElementById(id).value.replace(',', '.').trim();
-                let num = parseFloat(v);
-                if (isNaN(num)) { alert("Preencha todas as notas corretamente!"); return; }
+                let val = document.getElementById(id).value.replace(',', '.');
+                let num = parseFloat(val);
+                
+                if (isNaN(num) || num < 0 || num > 10) {
+                    alert("Insira notas válidas entre 0 e 10!");
+                    return;
+                }
                 n.push(num);
             }
 
@@ -80,7 +73,6 @@
             let resPart = parseFloat((agB % 0.1).toFixed(4));
             if (resPart >= 0.049) { ag = Math.ceil(agB * 10) / 10; } 
             else { ag = Math.floor(agB * 10) / 10; }
-            
             if (ag >= 6.95) ag = Math.round(ag * 10) / 10;
 
             document.getElementById('res').style.display = 'block';
@@ -91,27 +83,25 @@
             mCircle.innerText = ag.toFixed(1).replace('.', ',');
             
             document.getElementById('tab').innerHTML = 
-                "<tr><td>AV1</td><td>" + n[0].toFixed(1).replace('.',',') + "</td><td>25%</td></tr>" +
-                "<tr><td>AV2</td><td>" + n[1].toFixed(1).replace('.',',') + "</td><td>25%</td></tr>" +
-                "<tr><td>AV3</td><td>" + n[2].toFixed(1).replace('.',',') + "</td><td>30%</td></tr>" +
-                "<tr><td>EDAG</td><td>" + n[3].toFixed(1).replace('.',',') + "</td><td>20%</td></tr>";
+                "<tr><td>AV1: " + n[0] + "</td><td>AV2: " + n[1] + "</td></tr>" +
+                "<tr><td>AV3: " + n[2] + "</td><td>EDAG: " + n[3] + "</td></tr>";
 
             if (ag >= 7) {
-                sit.innerText = "APROVADO(A)"; 
+                sit.innerText = "Aprovado(a)"; 
                 sit.style.color = "var(--green)";
                 mCircle.style.borderColor = "var(--green)";
                 mCircle.style.color = "var(--green)";
                 cF.style.display = 'none';
             } else if (ag >= 4) {
-                sit.innerText = "VOCÊ IRÁ PARA A FINAL"; 
+                sit.innerText = "Você irá para a Final"; 
                 sit.style.color = "var(--primary)";
                 mCircle.style.borderColor = "var(--primary)";
                 mCircle.style.color = "var(--primary)";
                 cF.style.display = 'block';
-                let notaF = (50 - (6 * ag)) / 4;
-                document.getElementById('f-val').innerText = Math.max(0, notaF).toFixed(1).replace('.', ',');
+                let pf = (50 - (6 * ag)) / 4;
+                document.getElementById('f-val').innerText = pf.toFixed(1).replace('.', ',');
             } else {
-                sit.innerText = "REPROVADO(A)"; 
+                sit.innerText = "Reprovado(a)"; 
                 sit.style.color = "var(--red)";
                 mCircle.style.borderColor = "var(--red)";
                 mCircle.style.color = "var(--red)";
