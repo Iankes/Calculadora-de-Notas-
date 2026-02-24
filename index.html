@@ -5,18 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora Acadêmica</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; padding: 20px; }
-        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 450px; }
-        h2 { color: #2c3e50; text-align: center; margin-bottom: 20px; }
-        label { display: block; margin-top: 10px; font-weight: bold; color: #555; }
-        input { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
-        button { width: 100%; background-color: #27ae60; color: white; border: none; padding: 12px; margin-top: 20px; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; transition: background 0.3s; }
-        button:hover { background-color: #219150; }
-        .result { margin-top: 25px; padding: 15px; border-radius: 8px; border-left: 5px solid #27ae60; background: #f9f9f9; display: none; }
-        .final-box { background: #fff3cd; border: 1px solid #ffeeba; padding: 10px; margin-top: 10px; border-radius: 4px; font-size: 0.9em; }
-        .reprovado { border-left-color: #e74c3c; }
-        .aprovado { border-left-color: #27ae60; }
-        .final { border-left-color: #f1c40f; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; padding: 20px; }
+        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
+        h2 { text-align: center; color: #2c3e50; }
+        label { display: block; margin-top: 10px; font-weight: bold; }
+        input { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        button { width: 100%; background-color: #27ae60; color: white; border: none; padding: 12px; margin-top: 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        
+        /* Estilos da Tabela */
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+        th { background-color: #f2f2f2; }
+        
+        .result-box { margin-top: 20px; padding: 15px; border-radius: 8px; display: none; border-left: 5px solid #ccc; }
+        .info-final { background: #fff3cd; padding: 10px; border-radius: 4px; margin-top: 10px; font-size: 0.9em; border: 1px solid #ffeeba; }
     </style>
 </head>
 <body>
@@ -24,62 +26,78 @@
 <div class="container">
     <h2>Resumo Acadêmico</h2>
     
-    <label>Nota AV1 (Peso 2.5)</label>
-    <input type="number" id="av1" step="0.1" min="0" max="10" placeholder="Ex: 6.2">
+    <label>AV1 (Peso 2.5)</label>
+    <input type="number" id="av1" step="0.1" min="0" max="10">
     
-    <label>Nota AV2 (Peso 2.5)</label>
-    <input type="number" id="av2" step="0.1" min="0" max="10" placeholder="Ex: 7.5">
+    <label>AV2 (Peso 2.5)</label>
+    <input type="number" id="av2" step="0.1" min="0" max="10">
     
-    <label>Nota AV3 (Peso 3.0)</label>
-    <input type="number" id="av3" step="0.1" min="0" max="10" placeholder="Ex: 5.0">
+    <label>AV3 (Peso 3.0)</label>
+    <input type="number" id="av3" step="0.1" min="0" max="10">
     
-    <label>Nota EDAG (Peso 2.0)</label>
-    <input type="number" id="edag" step="0.1" min="0" max="10" placeholder="Ex: 8.0">
+    <label>EDAG (Peso 2.0)</label>
+    <input type="number" id="edag" step="0.1" min="0" max="10">
 
-    <button onclick="calcular()">Calcular Resultado</button>
+    <button onclick="calcular()">Gerar Tabela e Resultado</button>
 
-    <div id="resultado" class="result"></div>
+    <div id="area-resultado" class="result-box">
+        <div id="status"></div>
+        <table id="tabela-notas">
+            <thead>
+                <tr>
+                    <th>Avaliação</th>
+                    <th>Nota</th>
+                    <th>Peso</th>
+                </tr>
+            </thead>
+            <tbody id="corpo-tabela"></tbody>
+        </table>
+        <div id="explicacao-final"></div>
+    </div>
 </div>
 
 <script>
     function calcular() {
+        const notas = [
+            { nome: "AV1", valor: parseFloat(document.getElementById('av1').value) || 0, peso: 2.5 },
+            { nome: "AV2", valor: parseFloat(document.getElementById('av2').value) || 0, peso: 2.5 },
+            { nome: "AV3", valor: parseFloat(document.getElementById('av3').value) || 0, peso: 3.0 },
+            { nome: "EDAG", valor: parseFloat(document.getElementById('edag').value) || 0, peso: 2.0 }
+        ];
 
-        const av1 = parseFloat(document.getElementById('av1').value) || 0;
-        const av2 = parseFloat(document.getElementById('av2').value) || 0;
-        const av3 = parseFloat(document.getElementById('av3').value) || 0;
-        const edag = parseFloat(document.getElementById('edag').value) || 0;
-
-        const media = (av1 * 2.5 + av2 * 2.5 + av3 * 3.0 + edag * 2.0) / 10;
+        const media = (notas[0].valor * 2.5 + notas[1].valor * 2.5 + notas[2].valor * 3.0 + notas[3].valor * 2.0) / 10;
         
-        const resDiv = document.getElementById('resultado');
-        resDiv.style.display = 'block';
-        resDiv.className = 'result'; 
+        // Mostrar área de resultados
+        const area = document.getElementById('area-resultado');
+        area.style.display = 'block';
 
-        let conteudo = `<strong>Média Atual: ${media.toFixed(1)}</strong><br>`;
+        // Preencher Tabela
+        const corpo = document.getElementById('corpo-tabela');
+        corpo.innerHTML = notas.map(n => `<tr><td>${n.nome}</td><td>${n.valor.toFixed(1)}</td><td>${n.peso}</td></tr>`).join('');
+        corpo.innerHTML += `<tr style="font-weight:bold; background:#eee"><td>MÉDIA</td><td>${media.toFixed(1)}</td><td>10.0</td></tr>`;
 
-        if (media >= 7.0) {
-            resDiv.classList.add('aprovado');
-            conteudo += "Situação: <span style='color:green'>APROVADO DIRETO!</span>";
-        } 
-        else if (media >= 4.0) {
-            resDiv.classList.add('final');
-            const faltaParaSete = (7.0 - media).toFixed(1);
-            const notaFinal = (10.0 - media).toFixed(1);
-            
-            conteudo += `Situação: <span style='color:#856404'>EM FINAL</span><br>`;
-            conteudo += `Faltam ${faltaParaSete} para aprovação direta.<br>`;
-            conteudo += `<div class="final-box">`;
-            conteudo += `<strong>Precisa tirar ${notaFinal} na Prova Final.</strong><br>`;
-            conteudo += `<small>Cálculo: A média entre ${media.toFixed(1)} e a Final deve ser 5.0.</small>`;
-            conteudo += `</div>`;
-        } 
-        else {
-            resDiv.classList.add('reprovado');
-            conteudo += "Situação: <span style='color:red'>REPROVADO</span><br>";
-            conteudo += "<small>Média abaixo de 4.0. Sem direito a final.</small>";
+        // Lógica de Situação
+        const status = document.getElementById('status');
+        const explicacao = document.getElementById('explicacao-final');
+        explicacao.innerHTML = ""; // Limpa explicação anterior
+
+        if (media >= 7) {
+            area.style.borderLeftColor = "#27ae60";
+            status.innerHTML = "<h3 style='color:green'>SITUAÇÃO: APROVADO!</h3>";
+        } else if (media >= 4) {
+            area.style.borderLeftColor = "#f1c40f";
+            status.innerHTML = "<h3 style='color:#856404'>SITUAÇÃO: EM FINAL</h3>";
+            const notaFinal = (10 - media).toFixed(1);
+            explicacao.innerHTML = `
+                <div class="info-final">
+                    <strong>Quanto falta para passar?</strong><br>
+                    Para atingir a média 5.0 após a Prova Final, você precisa tirar: <strong>${notaFinal}</strong>.<br>
+                    <small>Cálculo: 10.0 - ${media.toFixed(1)} = ${notaFinal}</small>
+                </div>`;
+        } else {
+            area.style.borderLeftColor = "#e74c3c";
+            status.innerHTML = "<h3 style='color:red'>SITUAÇÃO: REPROVADO</h3>";
         }
-
-        resDiv.innerHTML = conteudo;
     }
 </script>
 
