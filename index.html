@@ -10,15 +10,16 @@
         h2 { text-align: center; color: #2c3e50; }
         label { display: block; margin-top: 10px; font-weight: bold; }
         input { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        input:invalid { border-color: #e74c3c; }
         button { width: 100%; background-color: #27ae60; color: white; border: none; padding: 12px; margin-top: 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
         
-        /* Estilos da Tabela */
         table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
         th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
         th { background-color: #f2f2f2; }
         
         .result-box { margin-top: 20px; padding: 15px; border-radius: 8px; display: none; border-left: 5px solid #ccc; }
         .info-final { background: #fff3cd; padding: 10px; border-radius: 4px; margin-top: 10px; font-size: 0.9em; border: 1px solid #ffeeba; }
+        .erro { color: #e74c3c; font-weight: bold; text-align: center; margin-top: 10px; display: none; }
     </style>
 </head>
 <body>
@@ -27,16 +28,18 @@
     <h2>Resumo Acadêmico</h2>
     
     <label>AV1 (Peso 2.5)</label>
-    <input type="number" id="av1" step="0.1" min="0" max="10">
+    <input type="number" id="av1" step="0.1" min="0" max="10" required>
     
     <label>AV2 (Peso 2.5)</label>
-    <input type="number" id="av2" step="0.1" min="0" max="10">
+    <input type="number" id="av2" step="0.1" min="0" max="10" required>
     
     <label>AV3 (Peso 3.0)</label>
-    <input type="number" id="av3" step="0.1" min="0" max="10">
+    <input type="number" id="av3" step="0.1" min="0" max="10" required>
     
     <label>EDAG (Peso 2.0)</label>
-    <input type="number" id="edag" step="0.1" min="0" max="10">
+    <input type="number" id="edag" step="0.1" min="0" max="10" required>
+
+    <div id="msg-erro" class="erro">⚠️ Por favor, preencha todas as notas!</div>
 
     <button onclick="calcular()">Gerar Tabela e Resultado</button>
 
@@ -58,34 +61,47 @@
 
 <script>
     function calcular() {
+        const ids = ['av1', 'av2', 'av3', 'edag'];
+        const msgErro = document.getElementById('msg-erro');
+        const areaRes = document.getElementById('area-resultado');
+        
+        // 1. Verificar se algum campo está vazio
+        for (let id of ids) {
+            let campo = document.getElementById(id);
+            if (campo.value.trim() === "") {
+                msgErro.style.display = 'block';
+                areaRes.style.display = 'none'; 
+                campo.focus();
+                return; 
+            }
+        }
+
+        msgErro.style.display = 'none';
+
         const notas = [
-            { nome: "AV1", valor: parseFloat(document.getElementById('av1').value) || 0, peso: 2.5 },
-            { nome: "AV2", valor: parseFloat(document.getElementById('av2').value) || 0, peso: 2.5 },
-            { nome: "AV3", valor: parseFloat(document.getElementById('av3').value) || 0, peso: 3.0 },
-            { nome: "EDAG", valor: parseFloat(document.getElementById('edag').value) || 0, peso: 2.0 }
+            { nome: "AV1", valor: parseFloat(document.getElementById('av1').value), peso: 2.5 },
+            { nome: "AV2", valor: parseFloat(document.getElementById('av2').value), peso: 2.5 },
+            { nome: "AV3", valor: parseFloat(document.getElementById('av3').value), peso: 3.0 },
+            { nome: "EDAG", valor: parseFloat(document.getElementById('edag').value), peso: 2.0 }
         ];
 
         const media = (notas[0].valor * 2.5 + notas[1].valor * 2.5 + notas[2].valor * 3.0 + notas[3].valor * 2.0) / 10;
         
-        // Mostrar área de resultados
-        const area = document.getElementById('area-resultado');
-        area.style.display = 'block';
+        areaRes.style.display = 'block';
 
-        // Preencher Tabela
         const corpo = document.getElementById('corpo-tabela');
         corpo.innerHTML = notas.map(n => `<tr><td>${n.nome}</td><td>${n.valor.toFixed(1)}</td><td>${n.peso}</td></tr>`).join('');
         corpo.innerHTML += `<tr style="font-weight:bold; background:#eee"><td>MÉDIA</td><td>${media.toFixed(1)}</td><td>10.0</td></tr>`;
 
-        // Lógica de Situação
         const status = document.getElementById('status');
         const explicacao = document.getElementById('explicacao-final');
-        explicacao.innerHTML = ""; // Limpa explicação anterior
+        explicacao.innerHTML = ""; 
 
         if (media >= 7) {
-            area.style.borderLeftColor = "#27ae60";
+            areaRes.style.borderLeftColor = "#27ae60";
             status.innerHTML = "<h3 style='color:green'>SITUAÇÃO: APROVADO!</h3>";
         } else if (media >= 4) {
-            area.style.borderLeftColor = "#f1c40f";
+            areaRes.style.borderLeftColor = "#f1c40f";
             status.innerHTML = "<h3 style='color:#856404'>SITUAÇÃO: EM FINAL</h3>";
             const notaFinal = (10 - media).toFixed(1);
             explicacao.innerHTML = `
@@ -95,7 +111,7 @@
                     <small>Cálculo: 10.0 - ${media.toFixed(1)} = ${notaFinal}</small>
                 </div>`;
         } else {
-            area.style.borderLeftColor = "#e74c3c";
+            areaRes.style.borderLeftColor = "#e74c3c";
             status.innerHTML = "<h3 style='color:red'>SITUAÇÃO: REPROVADO</h3>";
         }
     }
