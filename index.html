@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,154 +10,25 @@
             --blue-color: #3498db;
             --bg-color: #f0f2f5;
         }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            background-color: var(--bg-color);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            color: #333;
-        }
-
-        .card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 550px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-sizing: border-box;
-        }
-
-        h2 {
-            margin-top: 0;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-        }
-
-        .score-circle {
-            width: 60px;
-            height: 60px;
-            border: 4px solid var(--primary-color);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: var(--primary-color);
-            margin-right: 15px;
-        }
-
-        .score-square {
-            width: 60px;
-            height: 60px;
-            border: 4px solid var(--blue-color);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: var(--blue-color);
-            margin-right: 15px;
-        }
-
-        label {
-            display: block;
-            margin-top: 15px;
-            font-weight: 600;
-            color: #555;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 1rem;
-            box-sizing: border-box;
-            outline: none;
-        }
-
-        button {
-            width: 100%;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 15px;
-            margin-top: 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            font-weight: bold;
-        }
-
-        button:hover {
-            filter: brightness(0.9);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th {
-            text-align: left;
-            color: #777;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #eee;
-        }
-
-        td {
-            padding: 12px 0;
-            border-bottom: 1px solid #eee;
-            text-align: center;
-        }
-
-        td:first-child {
-            text-align: left;
-            font-weight: 500;
-        }
-
-        .formula-box {
-            background: #dcdcdc;
-            padding: 15px;
-            text-align: center;
-            border-radius: 6px;
-            font-weight: bold;
-            margin-top: 20px;
-        }
-
-        .info-text {
-            font-size: 0.95rem;
-            line-height: 1.5;
-            color: #444;
-            margin: 15px 0;
-        }
-
-        #area-resultado {
-            display: none;
-            width: 100%;
-            max-width: 550px;
-        }
-
-        .erro-msg {
-            color: #e74c3c;
-            font-weight: bold;
-            text-align: center;
-            display: none;
-            margin-top: 15px;
-        }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg-color); display: flex; flex-direction: column; align-items: center; padding: 20px; color: #333; }
+        .card { background: white; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 550px; padding: 25px; margin-bottom: 20px; box-sizing: border-box; }
+        h2 { margin-top: 0; font-size: 1.5rem; display: flex; align-items: center; }
+        .score-circle { width: 60px; height: 60px; border: 4px solid var(--primary-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: bold; color: var(--primary-color); margin-right: 15px; flex-shrink: 0; }
+        .score-square { width: 60px; height: 60px; border: 4px solid var(--blue-color); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: bold; color: var(--blue-color); margin-right: 15px; flex-shrink: 0; }
+        label { display: block; margin-top: 15px; font-weight: 600; color: #555; }
+        input { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; box-sizing: border-box; outline: none; }
+        button { width: 100%; background-color: var(--primary-color); color: white; border: none; padding: 15px; margin-top: 20px; border-radius: 8px; cursor: pointer; font-size: 1.1rem; font-weight: bold; }
+        button:hover { filter: brightness(0.9); }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { text-align: left; color: #777; padding-bottom: 10px; border-bottom: 2px solid #eee; }
+        td { padding: 12px 0; border-bottom: 1px solid #eee; text-align: center; }
+        td:first-child { text-align: left; font-weight: 500; }
+        .formula-box { background: #dcdcdc; padding: 15px; text-align: center; border-radius: 6px; font-weight: bold; margin-top: 20px; }
+        .info-text { font-size: 0.95rem; line-height: 1.5; color: #444; margin: 15px 0; }
+        #area-resultado { display: none; width: 100%; max-width: 550px; }
+        .erro-msg { color: #e74c3c; font-weight: bold; text-align: center; display: none; margin-top: 15px; }
     </style>
 </head>
-
 <body>
 
     <div class="card">
@@ -220,6 +90,7 @@
                 let num = parseFloat(val);
                 if (val === "" || isNaN(num) || num < 0 || num > 10) {
                     document.getElementById('msg-erro').style.display = 'block';
+                    document.getElementById('area-resultado').style.display = 'none';
                     return;
                 }
                 notas.push(num);
@@ -228,17 +99,52 @@
             document.getElementById('msg-erro').style.display = 'none';
             document.getElementById('area-resultado').style.display = 'block';
 
-
             let agBruta = (notas[0] * 2.5 + notas[1] * 2.5 + notas[2] * 3.0 + notas[3] * 2.0) / 10;
 
             let agAjustada;
-            let residuo = agBruta % 0.1;
+            let centesimos = parseFloat((agBruta % 0.1).toFixed(4));
 
-            if (residuo >= 0.049) {
+            if (centesimos >= 0.0499) {
                 agAjustada = Math.ceil(agBruta * 10) / 10;
             } else {
                 agAjustada = Math.floor(agBruta * 10) / 10;
             }
 
-            document.getElementById('circulo-media').innerText = agA
-        } 
+
+            if (agAjustada >= 6.95) {
+                agAjustada = Math.round(agAjustada * 10) / 10;
+            }
+
+            document.getElementById('circulo-media').innerText = agAjustada.toFixed(1).replace('.', ',');
+            
+            const corpo = document.getElementById('corpo-tabela');
+            corpo.innerHTML = `
+                <tr><td>AV1</td><td>${notas[0].toFixed(1).replace('.',',')}</td><td>25%</td></tr>
+                <tr><td>AV2</td><td>${notas[1].toFixed(1).replace('.',',')}</td><td>25%</td></tr>
+                <tr><td>AV3</td><td>${notas[2].toFixed(1).replace('.',',')}</td><td>30%</td></tr>
+                <tr><td>EDAG</td><td>${notas[3].toFixed(1).replace('.',',')}</td><td>20%</td></tr>
+            `;
+
+            const cardFinal = document.getElementById('card-final');
+            const msgSituacao = document.getElementById('msg-situacao');
+
+            if (agAjustada >= 7.0) {
+                msgSituacao.innerText = "APROVADO DIRETO";
+                msgSituacao.style.color = "#27ae60";
+                cardFinal.style.display = 'none';
+            } else if (agAjustada >= 4.0) {
+                msgSituacao.innerText = "VOCÊ IRÁ PARA A FINAL";
+                msgSituacao.style.color = "#f39c12";
+                cardFinal.style.display = 'block';
+                
+                let pf = (50 - (6 * agAjustada)) / 4;
+                document.getElementById('nota-final-necessaria').innerText = Math.max(0, pf).toFixed(1).replace('.', ',');
+            } else {
+                msgSituacao.innerText = "REPROVADO";
+                msgSituacao.style.color = "#e74c3c";
+                cardFinal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
