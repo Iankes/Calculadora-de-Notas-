@@ -3,75 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Notas Acadêmicas</title>
+    <title>Calculadora de Notas</title>
     <style>
-        :root {
-            --primary-color: #12f34a;
-            --blue-color: #8234db;
-            --bg-color: #f0f2f5;
+        :root { 
+            --primary: #f39c12; 
+            --blue: #3498db; 
+            --bg: #f0f2f5; 
+            --red: #e74c3c; 
+            --green: #27ae60; 
         }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg-color); display: flex; flex-direction: column; align-items: center; padding: 20px; color: #333; }
-        .card { background: white; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 550px; padding: 25px; margin-bottom: 20px; box-sizing: border-box; }
-        h2 { margin-top: 0; font-size: 1.5rem; display: flex; align-items: center; }
-        .score-circle { width: 60px; height: 60px; border: 4px solid var(--primary-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: bold; color: var(--primary-color); margin-right: 15px; flex-shrink: 0; }
-        .score-square { width: 60px; height: 60px; border: 4px solid var(--blue-color); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: bold; color: var(--blue-color); margin-right: 15px; flex-shrink: 0; }
-        label { display: block; margin-top: 15px; font-weight: 600; color: #555; }
-        input { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; box-sizing: border-box; outline: none; }
-        button { width: 100%; background-color: var(--primary-color); color: white; border: none; padding: 15px; margin-top: 20px; border-radius: 8px; cursor: pointer; font-size: 1.1rem; font-weight: bold; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); display: flex; flex-direction: column; align-items: center; padding: 20px; color: #333; }
+        .card { background: white; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 500px; padding: 25px; margin-bottom: 20px; box-sizing: border-box; }
+        .score-circle { width: 65px; height: 65px; border: 5px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; color: var(--primary); margin-right: 15px; flex-shrink: 0; transition: all 0.3s; }
+        .score-square { width: 60px; height: 60px; border: 4px solid var(--blue); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: bold; color: var(--blue); margin-right: 15px; flex-shrink: 0; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
+        button { width: 100%; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1.1rem; margin-top: 10px; transition: 0.3s; }
         button:hover { filter: brightness(0.9); }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th { text-align: left; color: #777; padding-bottom: 10px; border-bottom: 2px solid #eee; }
-        td { padding: 12px 0; border-bottom: 1px solid #eee; text-align: center; }
-        td:first-child { text-align: left; font-weight: 500; }
-        .formula-box { background: #dcdcdc; padding: 15px; text-align: center; border-radius: 6px; font-weight: bold; margin-top: 20px; }
-        #area-resultado { display: none; width: 100%; max-width: 550px; }
-        .erro-msg { color: #e74c3c; font-weight: bold; text-align: center; display: none; margin-top: 15px; }
+        td, th { padding: 12px; border-bottom: 1px solid #eee; text-align: center; }
+        .formula-box { background: #dcdcdc; padding: 15px; text-align: center; border-radius: 6px; font-weight: bold; margin-top: 15px; }
     </style>
 </head>
 <body>
 
     <div class="card">
-        <h2>Configurações de Notas</h2>
-        <label>AV1 (25%)</label>
-        <input type="text" id="av1" placeholder="Ex: 4,05">
-        <label>AV2 (25%)</label>
-        <input type="text" id="av2" placeholder="Ex: 4,04">
-        <label>AV3 (30%)</label>
-        <input type="text" id="av3" placeholder="Ex: 7,0">
-        <label>EDAG (20%)</label>
-        <input type="text" id="edag" placeholder="Ex: 8,0">
-
-        <div id="msg-erro" class="erro-msg">⚠️ Preencha todas as notas corretamente (0 a 10)!</div>
+        <h2 style="margin:0 0 15px 0">Configurações de Notas</h2>
+        <input type="text" id="av1" placeholder="AV1 (Ex: 4,05)">
+        <input type="text" id="av2" placeholder="AV2">
+        <input type="text" id="av3" placeholder="AV3">
+        <input type="text" id="edag" placeholder="EDAG">
         <button onclick="calcular()">Calcular Aproveitamento</button>
     </div>
 
-    <div id="area-resultado">
+    <div id="res" style="display:none; width: 100%; max-width: 500px;">
         <div class="card">
-            <div style="display: flex; align-items: center;">
-                <div class="score-circle" id="circulo-media">0,0</div>
+            <div style="display:flex; align-items:center">
+                <div class="score-circle" id="m-circle">0,0</div>
                 <div>
-                    <h2 style="margin: 0;">Média do Semestre</h2>
-                    <div id="msg-situacao" style="font-weight: bold;"></div>
+                    <h3 style="margin:0">Média do Semestre</h3>
+                    <div id="sit" style="font-weight:bold; font-size: 1.1rem;"></div>
                 </div>
             </div>
             <table>
-                <thead>
-                    <tr>
-                        <th>Avaliação</th>
-                        <th>Nota</th>
-                        <th>Peso (%)</th>
-                    </tr>
-                </thead>
-                <tbody id="corpo-tabela"></tbody>
+                <thead><tr><th>Ref</th><th>Nota</th><th>Peso</th></tr></thead>
+                <tbody id="tab"></tbody>
             </table>
         </div>
 
-        <div class="card" id="card-final" style="display: none;">
-            <div style="display: flex; align-items: center;">
-                <div class="score-square" id="nota-final-necessaria">0,0</div>
+        <div class="card" id="c-final" style="display:none">
+            <div style="display:flex; align-items:center">
+                <div class="score-square" id="f-val">0,0</div>
                 <div>
-                    <h2 style="margin: 0;">Pontuação para Aprovação</h2>
-                    <div style="font-weight: bold;">Mínimo necessário na Final</div>
+                    <h3 style="margin:0">Pontuação para Aprovação</h3>
+                    <small>Mínimo necessário na Final</small>
                 </div>
             </div>
             <div class="formula-box">Pontuação necessária = (50 - 6 x AG) / 4</div>
@@ -81,64 +65,57 @@
     <script>
         function calcular() {
             const ids = ['av1', 'av2', 'av3', 'edag'];
-            let notas = [];
-
-            for (let id of ids) {
-                let campo = document.getElementById(id);
-                let val = campo.value.trim().replace(',', '.');
-                let num = parseFloat(val);
-                
-                if (val === "" || isNaN(num) || num < 0 || num > 10) {
-                    document.getElementById('msg-erro').style.display = 'block';
-                    document.getElementById('area-resultado').style.display = 'none';
-                    campo.focus();
-                    return;
-                }
-                notas.push(num);
-            }
-
-            document.getElementById('msg-erro').style.display = 'none';
-            document.getElementById('area-resultado').style.display = 'block';
-
-            let agBruta = (notas[0] * 2.5 + notas[1] * 2.5 + notas[2] * 3.0 + notas[3] * 2.0) / 10;
-
-            let agAjustada;
-            let centesimos = parseFloat((agBruta % 0.1).toFixed(4));
-
-            if (centesimos >= 0.049) {
-                agAjustada = Math.ceil(agBruta * 10) / 10;
-            } else {
-                agAjustada = Math.floor(agBruta * 10) / 10;
-            }
-
-            document.getElementById('circulo-media').innerText = agAjustada.toFixed(1).replace('.', ',');
+            let n = [];
             
-            const corpo = document.getElementById('corpo-tabela');
-            corpo.innerHTML = `
-                <tr><td>AV1</td><td>${notas[0].toFixed(1).replace('.',',')}</td><td>25%</td></tr>
-                <tr><td>AV2</td><td>${notas[1].toFixed(1).replace('.',',')}</td><td>25%</td></tr>
-                <tr><td>AV3</td><td>${notas[2].toFixed(1).replace('.',',')}</td><td>30%</td></tr>
-                <tr><td>EDAG</td><td>${notas[3].toFixed(1).replace('.',',')}</td><td>20%</td></tr>
-            `;
+            for (let id of ids) {
+                let v = document.getElementById(id).value.replace(',', '.').trim();
+                let num = parseFloat(v);
+                if (isNaN(num)) { alert("Preencha todas as notas corretamente!"); return; }
+                n.push(num);
+            }
 
-            const cardFinal = document.getElementById('card-final');
-            const msgSituacao = document.getElementById('msg-situacao');
+            let agB = (n[0]*2.5 + n[1]*2.5 + n[2]*3 + n[3]*2) / 10;
+            
+            let ag;
+            let resPart = parseFloat((agB % 0.1).toFixed(4));
+            if (resPart >= 0.049) { ag = Math.ceil(agB * 10) / 10; } 
+            else { ag = Math.floor(agB * 10) / 10; }
+            
+            if (ag >= 6.95) ag = Math.round(ag * 10) / 10;
 
-            if (agAjustada >= 7.0) {
-                msgSituacao.innerText = "APROVADO DIRETO";
-                msgSituacao.style.color = "#27ae60";
-                cardFinal.style.display = 'none';
-            } else if (agAjustada >= 4.0) {
-                msgSituacao.innerText = "VOCÊ IRÁ PARA A FINAL";
-                msgSituacao.style.color = "#f39c12";
-                cardFinal.style.display = 'block';
-                
-                let pf = (50 - (6 * agAjustada)) / 4;
-                document.getElementById('nota-final-necessaria').innerText = Math.max(0, pf).toFixed(1).replace('.', ',');
+            document.getElementById('res').style.display = 'block';
+            const mCircle = document.getElementById('m-circle');
+            const sit = document.getElementById('sit');
+            const cF = document.getElementById('c-final');
+
+            mCircle.innerText = ag.toFixed(1).replace('.', ',');
+            
+            document.getElementById('tab').innerHTML = 
+                "<tr><td>AV1</td><td>" + n[0].toFixed(1).replace('.',',') + "</td><td>25%</td></tr>" +
+                "<tr><td>AV2</td><td>" + n[1].toFixed(1).replace('.',',') + "</td><td>25%</td></tr>" +
+                "<tr><td>AV3</td><td>" + n[2].toFixed(1).replace('.',',') + "</td><td>30%</td></tr>" +
+                "<tr><td>EDAG</td><td>" + n[3].toFixed(1).replace('.',',') + "</td><td>20%</td></tr>";
+
+            if (ag >= 7) {
+                sit.innerText = "APROVADO(A)"; 
+                sit.style.color = "var(--green)";
+                mCircle.style.borderColor = "var(--green)";
+                mCircle.style.color = "var(--green)";
+                cF.style.display = 'none';
+            } else if (ag >= 4) {
+                sit.innerText = "VOCÊ IRÁ PARA A FINAL"; 
+                sit.style.color = "var(--primary)";
+                mCircle.style.borderColor = "var(--primary)";
+                mCircle.style.color = "var(--primary)";
+                cF.style.display = 'block';
+                let notaF = (50 - (6 * ag)) / 4;
+                document.getElementById('f-val').innerText = Math.max(0, notaF).toFixed(1).replace('.', ',');
             } else {
-                msgSituacao.innerText = "REPROVADO";
-                msgSituacao.style.color = "#e74c3c";
-                cardFinal.style.display = 'none';
+                sit.innerText = "REPROVADO(A)"; 
+                sit.style.color = "var(--red)";
+                mCircle.style.borderColor = "var(--red)";
+                mCircle.style.color = "var(--red)";
+                cF.style.display = 'none';
             }
         }
     </script>
