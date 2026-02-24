@@ -10,7 +10,6 @@
         h2 { text-align: center; color: #2c3e50; }
         label { display: block; margin-top: 10px; font-weight: bold; }
         input { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
-        input:invalid { border-color: #e74c3c; }
         button { width: 100%; background-color: #27ae60; color: white; border: none; padding: 12px; margin-top: 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
         
         table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
@@ -28,16 +27,16 @@
     <h2>Resumo Acadêmico</h2>
     
     <label>AV1 (Peso 2.5)</label>
-    <input type="number" id="av1" step="0.1" min="0" max="10" required>
+    <input type="number" id="av1" step="0.01" min="0" max="10" placeholder="Ex: 6.95">
     
     <label>AV2 (Peso 2.5)</label>
-    <input type="number" id="av2" step="0.1" min="0" max="10" required>
+    <input type="number" id="av2" step="0.01" min="0" max="10">
     
     <label>AV3 (Peso 3.0)</label>
-    <input type="number" id="av3" step="0.1" min="0" max="10" required>
+    <input type="number" id="av3" step="0.01" min="0" max="10">
     
     <label>EDAG (Peso 2.0)</label>
-    <input type="number" id="edag" step="0.1" min="0" max="10" required>
+    <input type="number" id="edag" step="0.01" min="0" max="10">
 
     <div id="msg-erro" class="erro">⚠️ Por favor, preencha todas as notas!</div>
 
@@ -49,7 +48,7 @@
             <thead>
                 <tr>
                     <th>Avaliação</th>
-                    <th>Nota</th>
+                    <th>Nota Original</th>
                     <th>Peso</th>
                 </tr>
             </thead>
@@ -65,14 +64,13 @@
         const msgErro = document.getElementById('msg-erro');
         const areaRes = document.getElementById('area-resultado');
         
-        // 1. Verificar se algum campo está vazio
         for (let id of ids) {
             let campo = document.getElementById(id);
             if (campo.value.trim() === "") {
                 msgErro.style.display = 'block';
-                areaRes.style.display = 'none'; 
+                areaRes.style.display = 'none';
                 campo.focus();
-                return; 
+                return;
             }
         }
 
@@ -85,30 +83,30 @@
             { nome: "EDAG", valor: parseFloat(document.getElementById('edag').value), peso: 2.0 }
         ];
 
-        const media = (notas[0].valor * 2.5 + notas[1].valor * 2.5 + notas[2].valor * 3.0 + notas[3].valor * 2.0) / 10;
+        let mediaCalculada = (notas[0].valor * 2.5 + notas[1].valor * 2.5 + notas[2].valor * 3.0 + notas[3].valor * 2.0) / 10;
+        let mediaArredondada = Math.round(mediaCalculada * 10) / 10;
         
         areaRes.style.display = 'block';
 
         const corpo = document.getElementById('corpo-tabela');
-        corpo.innerHTML = notas.map(n => `<tr><td>${n.nome}</td><td>${n.valor.toFixed(1)}</td><td>${n.peso}</td></tr>`).join('');
-        corpo.innerHTML += `<tr style="font-weight:bold; background:#eee"><td>MÉDIA</td><td>${media.toFixed(1)}</td><td>10.0</td></tr>`;
+        corpo.innerHTML = notas.map(n => `<tr><td>${n.nome}</td><td>${n.valor}</td><td>${n.peso}</td></tr>`).join('');
+        corpo.innerHTML += `<tr style="font-weight:bold; background:#eee"><td>MÉDIA FINAL</td><td>${mediaArredondada.toFixed(1)}</td><td>10.0</td></tr>`;
 
         const status = document.getElementById('status');
         const explicacao = document.getElementById('explicacao-final');
         explicacao.innerHTML = ""; 
 
-        if (media >= 7) {
+        if (mediaArredondada >= 7.0) {
             areaRes.style.borderLeftColor = "#27ae60";
             status.innerHTML = "<h3 style='color:green'>SITUAÇÃO: APROVADO!</h3>";
-        } else if (media >= 4) {
+        } else if (mediaArredondada >= 4.0) {
             areaRes.style.borderLeftColor = "#f1c40f";
             status.innerHTML = "<h3 style='color:#856404'>SITUAÇÃO: EM FINAL</h3>";
-            const notaFinal = (10 - media).toFixed(1);
+            const notaFinal = (10 - mediaArredondada).toFixed(1);
             explicacao.innerHTML = `
                 <div class="info-final">
-                    <strong>Quanto falta para passar?</strong><br>
-                    Para atingir a média 5.0 após a Prova Final, você precisa tirar: <strong>${notaFinal}</strong>.<br>
-                    <small>Cálculo: 10.0 - ${media.toFixed(1)} = ${notaFinal}</small>
+                    <strong>Arredondamento aplicado:</strong> Sua média foi para ${mediaArredondada.toFixed(1)}.<br>
+                    Precisa tirar <strong>${notaFinal}</strong> na Prova Final.
                 </div>`;
         } else {
             areaRes.style.borderLeftColor = "#e74c3c";
@@ -116,6 +114,3 @@
         }
     }
 </script>
-
-</body>
-</html>
